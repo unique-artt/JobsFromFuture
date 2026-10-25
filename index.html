@@ -97,7 +97,7 @@ layout: default
       <a class="job-card" href="{{ job.url }}" data-title="{{ job.title | downcase }}" data-location="{{ job.location | downcase }}">
         <h3>{{ job.title }}</h3>
         <div class="card-meta">{{ job.location }}{% if job.employmentType %} · {{ job.employmentType | capitalize }}{% endif %}</div>
-        <div class="card-salary">${{ job.salaryMin }}–${{ job.salaryMax }}/hr</div>
+        <div class="card-salary">{% if job.type == "task" %}{{ job.payLabel }}{% else %}${{ job.salaryMin }}–${{ job.salaryMax }}/hr{% endif %}</div>
       </a>
       {% endfor %}
     </div>
