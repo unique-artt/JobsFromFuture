@@ -1,0 +1,104 @@
+---
+layout: default
+---
+<style>
+  .job-page {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 32px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+  }
+  .job-page h1 {
+    font-size: 26px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  .job-meta span {
+    background: #f3f4f6;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .job-body {
+    font-size: 15px;
+    color: #374151;
+    margin-bottom: 32px;
+  }
+  .job-body p { margin-bottom: 14px; }
+  .job-body ul { margin: 0 0 14px 20px; }
+  .job-body li { margin-bottom: 6px; }
+  .apply-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .apply-btn:hover { background: #1d4ed8; }
+  .apply-note {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #9ca3af;
+  }
+</style>
+
+<article class="job-page">
+  <h1>{{ page.title }}</h1>
+
+  <div class="job-meta">
+    <span>{{ page.location }}</span>
+    <span>${{ page.salaryMin }}–${{ page.salaryMax }}/hr</span>
+    {% if page.employmentType %}<span>{{ page.employmentType | capitalize }}</span>{% endif %}
+  </div>
+
+  <div class="job-body">
+    {{ content }}
+  </div>
+
+  <a class="apply-btn" href="{{ page.apply_redirect }}" rel="nofollow">Apply Now</a>
+  <span class="apply-note">Apply directly on the company's website</span>
+</article>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "JobPosting",
+  "title": {{ page.title | jsonify }},
+  "description": {{ page.description | jsonify }},
+  "datePosted": "{{ page.date | date: '%Y-%m-%d' }}",
+  "validThrough": "{{ page.validThrough | date: '%Y-%m-%d' }}",
+  "employmentType": {{ page.employmentType | jsonify }},
+  "hiringOrganization": {
+    "@type": "Organization",
+    "name": {{ page.hiringOrganization | jsonify }}
+  },
+  {% if page.remote %}"jobLocationType": "TELECOMMUTE",
+  "applicantLocationRequirements": {
+    "@type": "Country",
+    "name": {{ page.applicantCountry | jsonify }}
+  },{% endif %}
+  "baseSalary": {
+    "@type": "MonetaryAmount",
+    "currency": "USD",
+    "value": {
+      "@type": "QuantitativeValue",
+      "minValue": {{ page.salaryMin }},
+      "maxValue": {{ page.salaryMax }},
+      "unitText": {{ page.salaryUnit | jsonify }}
+    }
+  }
+}
+</script>
