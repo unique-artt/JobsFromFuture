@@ -60,7 +60,11 @@ layout: default
 
   <div class="job-meta">
     <span>{{ page.location }}</span>
-    <span>${{ page.salaryMin }}–${{ page.salaryMax }}/hr</span>
+    {% if page.type == "task" %}
+      <span>{{ page.payLabel }}</span>
+    {% else %}
+      <span>${{ page.salaryMin }}–${{ page.salaryMax }}/hr</span>
+    {% endif %}
     {% if page.employmentType %}<span>{{ page.employmentType | capitalize }}</span>{% endif %}
   </div>
 
@@ -72,6 +76,7 @@ layout: default
   <span class="apply-note">Apply directly on the company's website</span>
 </article>
 
+{% if page.type != "task" %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org/",
@@ -112,3 +117,4 @@ layout: default
   }
 }
 </script>
+{% endif %}
