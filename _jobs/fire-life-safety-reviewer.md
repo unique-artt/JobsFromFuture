@@ -37,4 +37,4 @@ Firefighters and fire officers without plan review or inspection responsibility,
 
 Paid hourly at $45 to $60 depending on experience, with a path to grow your rate as the project scales.
 
-You will be engaged as an independent contractor. This is a fully remote role that can be completed on your own schedule. Payments are weekly based on services rendered. No H1-B or STEM OPT support is available at this time.
+You will be engaged as an independent contractor. This is a fully remote role that can be completed on your own schedule. Payments are weekly based on services rendered. No H1-B or STEM OPT support is available at this time. This listing is for a role at an external company. We may use an affiliate link and earn a commission when you apply through it, which helps keep this site running at no cost to you.
