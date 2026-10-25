@@ -57,4 +57,4 @@ This listing does not accept or reject candidates, so you will not get a decisio
 
 Finishing the domain expert interview and joining every network you qualify for both improve your odds of being matched. You only need to sign up once to be eligible across all of them.
 
-You will be engaged as an independent contractor. This is a fully remote role that can be completed on your own schedule. Payments are weekly based on services rendered. No H1-B or STEM OPT support is available at this time.
+You will be engaged as an independent contractor. This is a fully remote role that can be completed on your own schedule. Payments are weekly based on services rendered. No H1-B or STEM OPT support is available at this time. This listing is for a role at an external company. We may use an affiliate link and earn a commission when you apply through it, which helps keep this site running at no cost to you.
