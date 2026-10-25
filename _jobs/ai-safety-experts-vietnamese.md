@@ -13,7 +13,7 @@ salaryUnit: "HOUR"
 remote: true
 applicantCountry: "US"
 location: "Remote"
-apply_redirect: "/go/ai-safety-experts-vietnamese/"
+apply_redirect: "/go/ai-safety-experts-vietnamese"
 ---
 **Location:** Remote
 
