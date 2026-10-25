@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+  <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+      background: #f7f8fa;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .header {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 20px;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #111;
+    }
+    .logo span { color: #2563eb; }
+
+    .search-bar {
+      flex: 1;
+      max-width: 480px;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #fafafa;
+      outline: none;
+    }
+    .search-bar input:focus {
+      border-color: #2563eb;
+      background: #fff;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .footer {
+      margin-top: 60px;
+      padding: 30px 20px;
+      border-top: 1px solid #e5e7eb;
+      background: #fff;
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 640px) {
+      .header-inner { flex-direction: column; align-items: stretch; }
+      .search-bar { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">Jobs From <span>Future</span></a>
+      <div class="search-bar">
+        <input type="text" id="job-search" placeholder="Search jobs by title or keyword..." aria-label="Search jobs">
+      </div>
+    </div>
+  </header>
+
+  <main>
+    {{ content }}
+  </main>
+
+  <footer class="footer">
+    <p>&copy; {{ site.time | date: '%Y' }} Jobs From Future. All rights reserved.</p>
+  </footer>
+
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>
