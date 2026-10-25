@@ -1,5 +1,6 @@
 ---
 layout: job
+type: "job"
 title: "Research Generalist"
 date: 2026-10-25
 validThrough: 2026-11-25
