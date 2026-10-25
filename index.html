@@ -61,6 +61,26 @@ layout: default
     font-size: 15px;
     display: none;
   }
+
+  .coming-soon {
+    text-align: center;
+    padding: 70px 24px;
+    background: #fff;
+    border: 1px dashed #d1d5db;
+    border-radius: 16px;
+    margin: 40px 0 20px;
+  }
+  .coming-soon h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .coming-soon p {
+    font-size: 15px;
+    color: #6b7280;
+    max-width: 480px;
+    margin: 0 auto;
+  }
 </style>
 
 <section class="hero">
@@ -69,15 +89,23 @@ layout: default
 </section>
 
 <div class="container">
-  <div class="job-grid" id="job-grid">
-    {% for job in site.jobs %}
-    <a class="job-card" href="{{ job.url }}" data-title="{{ job.title | downcase }}" data-location="{{ job.location | downcase }}">
-      <h3>{{ job.title }}</h3>
-      <div class="card-meta">{{ job.location }}{% if job.employmentType %} · {{ job.employmentType | capitalize }}{% endif %}</div>
-      <div class="card-salary">${{ job.salaryMin }}–${{ job.salaryMax }}/hr</div>
-    </a>
-    {% endfor %}
-  </div>
+  {% assign job_count = site.jobs | size %}
 
-  <p class="no-results" id="no-results">No jobs match your search. Try a different keyword.</p>
+  {% if job_count >= 30 %}
+    <div class="job-grid" id="job-grid">
+      {% for job in site.jobs %}
+      <a class="job-card" href="{{ job.url }}" data-title="{{ job.title | downcase }}" data-location="{{ job.location | downcase }}">
+        <h3>{{ job.title }}</h3>
+        <div class="card-meta">{{ job.location }}{% if job.employmentType %} · {{ job.employmentType | capitalize }}{% endif %}</div>
+        <div class="card-salary">${{ job.salaryMin }}–${{ job.salaryMax }}/hr</div>
+      </a>
+      {% endfor %}
+    </div>
+    <p class="no-results" id="no-results">No jobs match your search. Try a different keyword.</p>
+  {% else %}
+    <div class="coming-soon">
+      <h2>Coming Soon</h2>
+      <p>We're curating a list of high-quality remote roles. New opportunities are being added daily — check back shortly.</p>
+    </div>
+  {% endif %}
 </div>
