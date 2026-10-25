@@ -45,4 +45,4 @@ This is writing-intensive work. Every judgment you make needs a written rational
 
 Your work here will not involve, and must not draw on, classified or export-controlled information, or anything covered by an NDA or prepublication review obligation. If you hold such obligations you may still be a good fit; tell us in your application and the work will be scoped accordingly.
 
-We consider all qualified applicants without regard to legally protected characteristics and provide reasonable accommodations upon request.
+We consider all qualified applicants without regard to legally protected characteristics and provide reasonable accommodations upon request. This listing is for a task at an external company. We may use an affiliate link and earn a commission when you apply through it, which helps keep this site running at no cost to you.
