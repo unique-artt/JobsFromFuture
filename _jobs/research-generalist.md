@@ -13,7 +13,7 @@ salaryUnit: "HOUR"
 remote: true
 applicantCountry: "US"
 location: "Remote"
-apply_redirect: "/go/research-generalist/"
+apply_redirect: "/go/research-generalist"
 ---
 Part-time remote research work for a leading AI lab. $50–$60 per hour, about 10–20 hours a week, work on your own schedule.
 
