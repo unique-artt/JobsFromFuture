@@ -11,7 +11,7 @@ payLabel: "Flat $400"
 remote: true
 applicantCountry: "US"
 location: "Remote (United States)"
-apply_redirect: "/go/retail-trader/"
+apply_redirect: "/go/retail-trader"
 ---
 **About the work**
 
