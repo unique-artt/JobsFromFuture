@@ -59,4 +59,4 @@ This project involves reviewing AI outputs that touch on sensitive topics such a
 - Build experience in human data-driven AI red teaming at the frontier of safety
 - Play a direct role in making AI systems more robust, safe, and trustworthy
 
-You will be engaged as an independent contractor. This is a fully remote role that can be completed on your own schedule. Payments are weekly based on services rendered. No H1-B or STEM OPT support is available at this time.
+You will be engaged as an independent contractor. This is a fully remote role that can be completed on your own schedule. Payments are weekly based on services rendered. No H1-B or STEM OPT support is available at this time. This listing is for a role at an external company. We may use an affiliate link and earn a commission when you apply through it, which helps keep this site running at no cost to you.
