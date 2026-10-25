@@ -52,4 +52,4 @@ The writing takes up to about 1.5 hours.
 
 Taking part requires signing an Expert Content License Agreement, which covers how your trading history and annotations are licensed and used. You sign it as part of applying.
 
-We consider all qualified applicants without regard to legally protected characteristics and provide reasonable accommodations upon request.
+We consider all qualified applicants without regard to legally protected characteristics and provide reasonable accommodations upon request. This listing is for a task at an external company. We may use an affiliate link and earn a commission when you apply through it, which helps keep this site running at no cost to you.
