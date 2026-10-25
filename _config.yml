@@ -7,7 +7,7 @@ baseurl: ""
 collections:
   jobs:
     output: true
-    permalink: /jobs/:name
+    permalink: /jobs/:name.html
 
 # Defaults
 defaults:
