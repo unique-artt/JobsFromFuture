@@ -1,0 +1,26 @@
+title: Jobs From Future
+description: Remote jobs and AI research opportunities, updated regularly.
+url: "https://jobsfromfuture.com"
+baseurl: ""
+
+# Collections
+collections:
+  jobs:
+    output: true
+    permalink: /jobs/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "jobs"
+    values:
+      layout: job
+
+# Plugins (GitHub Pages supported)
+plugins:
+  - jekyll-sitemap
+
+# Exclude from build
+exclude:
+  - README.md
