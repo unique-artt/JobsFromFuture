@@ -89,6 +89,16 @@ layout: default
   "applicantLocationRequirements": {
     "@type": "Country",
     "name": {{ page.applicantCountry | jsonify }}
+  },{% else %}"jobLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": {{ page.streetAddress | jsonify }},
+      "addressLocality": {{ page.city | jsonify }},
+      "addressRegion": {{ page.region | jsonify }},
+      "postalCode": {{ page.postalCode | jsonify }},
+      "addressCountry": {{ page.country | jsonify }}
+    }
   },{% endif %}
   "baseSalary": {
     "@type": "MonetaryAmount",
