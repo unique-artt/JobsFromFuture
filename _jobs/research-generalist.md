@@ -30,4 +30,4 @@ You'll help benchmark and improve cutting-edge AI models by creating high-qualit
 
 - You must own an Apple Silicon MacBook (M-series MacBook Pro, or a MacBook Air running macOS 15 or higher)
 - Roughly 10–20 hours per week
-- No H1-B or STEM OPT support available
+- No H1-B or STEM OPT support available. This listing is for a role at an external company. We may use an affiliate link and earn a commission when you apply through it, which helps keep this site running at no cost to you.
