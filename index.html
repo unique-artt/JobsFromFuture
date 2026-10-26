@@ -4,7 +4,6 @@ layout: default
 <style>
   .hero {
     position: relative;
-    overflow: hidden;
     background: #fff;
     padding: 80px 24px 70px;
     text-align: center;
@@ -60,6 +59,7 @@ layout: default
     padding: 6px;
     box-shadow: 0 6px 24px rgba(17, 24, 39, 0.06);
     transition: border-color 0.15s, box-shadow 0.15s;
+    z-index: 30;
   }
   .hero-search:focus-within {
     border-color: var(--orange);
@@ -82,7 +82,7 @@ layout: default
     background: transparent;
     color: var(--ink);
     cursor: pointer;
-    max-width: 200px;
+    max-width: 240px;
   }
   .hero-search button {
     background: var(--orange);
@@ -111,7 +111,7 @@ layout: default
     max-height: 280px;
     overflow-y: auto;
     display: none;
-    z-index: 20;
+    z-index: 60;
     text-align: left;
   }
   .suggestions.open { display: block; }
@@ -125,7 +125,7 @@ layout: default
   .suggestion-item:last-child { border-bottom: none; }
   .suggestion-item:hover { background: #fff7ed; color: var(--orange); }
 
-  .tabs-wrap { max-width: 1140px; margin: 40px auto 0; padding: 0 24px; }
+  .tabs-wrap { max-width: 1140px; margin: 40px auto 0; padding: 0 24px; position: relative; z-index: 1; }
   .tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
@@ -151,6 +151,8 @@ layout: default
     display: flex;
     align-items: center;
     gap: 16px;
+    position: relative;
+    z-index: 1;
   }
   .arrow {
     flex: 0 0 auto;

@@ -26,22 +26,29 @@
       .catch(function () { cb(); });
   }
 
-  // ---------- Homepage: location dropdown + suggestions + tabs + pagination ----------
+  function buildLocationOptions(selected) {
+    if (!locSelect) return;
+    var locs = {};
+    allJobs.forEach(function (j) {
+      var loc = (j.location || "").trim();
+      if (loc) locs[loc] = true;
+    });
+    // Always offer the generic "Remote" bucket
+    locs["Remote"] = true;
+
+    Object.keys(locs).sort().forEach(function (loc) {
+      if (loc === "Remote") return; // handled below so it sits first among remote entries
+      var opt = document.createElement("option");
+      opt.value = loc;
+      opt.textContent = loc;
+      if (loc === selected) opt.selected = true;
+      locSelect.appendChild(opt);
+    });
+  }
+
+  // ---------- Homepage ----------
   function initHomepage() {
-    if (locSelect) {
-      var locs = {};
-      allJobs.forEach(function (j) {
-        var loc = j.location || "";
-        if (loc.toLowerCase().indexOf("remote") !== -1) loc = "Remote";
-        if (loc) locs[loc] = true;
-      });
-      Object.keys(locs).sort().forEach(function (loc) {
-        var opt = document.createElement("option");
-        opt.value = loc;
-        opt.textContent = loc;
-        locSelect.appendChild(opt);
-      });
-    }
+    buildLocationOptions("");
 
     if (qInput && suggestionsBox) {
       qInput.addEventListener("input", function () {
@@ -135,28 +142,20 @@
     var loc = (params.get("loc") || "").trim();
 
     if (qInput) qInput.value = q;
+    buildLocationOptions(loc);
 
-    if (locSelect) {
-      var locs = {};
-      allJobs.forEach(function (j) {
-        var l = j.location || "";
-        if (l.toLowerCase().indexOf("remote") !== -1) l = "Remote";
-        if (l) locs[l] = true;
-      });
-      Object.keys(locs).sort().forEach(function (l) {
-        var opt = document.createElement("option");
-        opt.value = l;
-        opt.textContent = l;
-        if (l === loc) opt.selected = true;
-        locSelect.appendChild(opt);
-      });
+    function looseMatch(haystack, needle) {
+      if (!needle) return true;
+      return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
     }
 
     function jobMatchesLocation(job, wanted) {
       if (!wanted) return true;
-      var jl = (job.location || "").toLowerCase();
-      if (wanted.toLowerCase() === "remote") return job.remote || jl.indexOf("remote") !== -1;
-      return jl.indexOf(wanted.toLowerCase()) !== -1;
+      var jl = job.location || "";
+      if (wanted.toLowerCase() === "remote") {
+        return job.remote === true || looseMatch(jl, "remote");
+      }
+      return looseMatch(jl, wanted);
     }
 
     function scoreJob(job, term) {
@@ -174,13 +173,28 @@
       return s;
     }
 
-    var scored = allJobs
-      .filter(function (j) { return jobMatchesLocation(j, loc); })
+    var locationFiltered = allJobs.filter(function (j) { return jobMatchesLocation(j, loc); });
+
+    var scored = locationFiltered
       .map(function (j) { return { job: j, score: scoreJob(j, q) }; })
       .sort(function (a, b) { return b.score - a.score; });
 
-    var exact = q ? scored.filter(function (x) { return x.score > 0; }) : scored;
-    var toShow = exact.length ? exact : scored;
+    var keywordMatches = q ? scored.filter(function (x) { return x.score > 0; }) : scored;
+
+    // If location is selected and keyword found nothing, still show every job in that location
+    var toShow;
+    var noExactMatch = false;
+    if (q && keywordMatches.length === 0) {
+      if (loc && locationFiltered.length > 0) {
+        toShow = locationFiltered.map(function (j) { return { job: j, score: 0 }; });
+        noExactMatch = true;
+      } else {
+        toShow = scored;
+        noExactMatch = true;
+      }
+    } else {
+      toShow = keywordMatches.length ? keywordMatches : scored;
+    }
 
     if (searchStatus) {
       if (q || loc) {
@@ -192,11 +206,22 @@
       }
     }
 
-    if (!exact.length && q) {
-      if (searchEmpty) searchEmpty.style.display = "block";
+    if (noExactMatch && searchEmpty) {
+      searchEmpty.style.display = "block";
       if (relatedTitle) relatedTitle.style.display = "block";
-    } else {
-      if (searchEmpty) searchEmpty.style.display = "none";
+      if (loc) {
+        searchEmpty.querySelector("h2").textContent = "No exact match for that keyword";
+        searchEmpty.querySelector("p").textContent =
+          "Here are all the jobs we have in " + loc + ". Try a different keyword if you want to narrow further.";
+        if (relatedTitle) relatedTitle.textContent = "Jobs in " + loc;
+      } else {
+        searchEmpty.querySelector("h2").textContent = "No exact match found";
+        searchEmpty.querySelector("p").textContent =
+          "We couldn't find a job with that term. Try a related search below.";
+        if (relatedTitle) relatedTitle.textContent = "Related jobs";
+      }
+    } else if (searchEmpty) {
+      searchEmpty.style.display = "none";
       if (relatedTitle) relatedTitle.style.display = "none";
     }
 
