@@ -18,7 +18,7 @@
 
   var allJobs = [];
   var PER_PAGE = 9;
-  var SPARSE_THRESHOLD = 3; // if a filter returns 3 or fewer jobs, show extra suggestions
+  var SPARSE_THRESHOLD = 3; 
 
   function fetchJobs(cb) {
     fetch("/search.json")
@@ -37,8 +37,6 @@
 
   function buildLocationOptions(selected) {
     if (!locSelect) return;
-    
-    // FIX: Wipe the dropdown clean before adding anything
     locSelect.innerHTML = '<option value="">All locations</option>';
 
     var seen = {};
@@ -63,7 +61,6 @@
 
   // ---------- Homepage ----------
   function initHomepage() {
-    // Only build location options if we are actually on the homepage
     if (grid) {
       buildLocationOptions("");
     }
@@ -185,7 +182,6 @@
 
     if (qInput) qInput.value = q;
     
-    // FIX: Build the options for the search page cleanly
     buildLocationOptions(loc);
 
     function looseContains(haystack, needle) {
@@ -215,33 +211,59 @@
       return s;
     }
 
+    // 1. Initial filter by location
     var locationFiltered = allJobs.filter(function (j) { return jobMatchesLocation(j, loc); });
 
+    // 2. Score the location-filtered jobs by keyword
     var scored = locationFiltered
       .map(function (j) { return { job: j, score: scoreJob(j, q) }; })
       .sort(function (a, b) { return b.score - a.score; });
 
     var keywordMatches = q ? scored.filter(function (x) { return x.score > 0; }) : scored;
 
+    // 3. If we have a keyword but found 0 matches in that location, fallback to searching the whole board
+    var overrideLocation = false;
+    if (q && keywordMatches.length === 0 && loc) {
+      var globalMatches = allJobs
+        .map(function (j) { return { job: j, score: scoreJob(j, q) }; })
+        .filter(function (x) { return x.score > 0; })
+        .sort(function (a, b) { return b.score - a.score; });
+      
+      if (globalMatches.length > 0) {
+        // Found the keyword globally, so we use that instead of the empty location search
+        keywordMatches = globalMatches;
+        locationFiltered = globalMatches.map(function(x) { return x.job; });
+        overrideLocation = true;
+      }
+    }
+
     var toShow;
     var noExactMatch = false;
+    
     if (q && keywordMatches.length === 0) {
+      // No matches even globally for this keyword (e.g. "zzzz")
       noExactMatch = true;
       toShow = locationFiltered.map(function (j) { return { job: j, score: 0 }; });
     } else {
       toShow = keywordMatches.length ? keywordMatches : scored;
     }
 
+    // Build the status text
     if (searchStatus) {
       if (q || loc) {
-        searchStatus.innerHTML = "Showing results for <strong>" +
-          (q ? q : "all jobs") + "</strong>" +
-          (loc ? " in <strong>" + loc + "</strong>" : "") + ".";
+        if (overrideLocation) {
+          searchStatus.innerHTML = "No results for <strong>" + q + "</strong> in <strong>" + loc + "</strong>. Showing <strong>" + q + "</strong> roles from all locations:";
+        } else {
+          searchStatus.innerHTML = "Showing results for <strong>" +
+            (q ? q : "all jobs") + "</strong>" +
+            (loc ? " in <strong>" + loc + "</strong>" : "") + ".";
+        }
       } else {
         searchStatus.textContent = "All jobs";
       }
     }
 
+    // Build the "No exact match" block
     if (noExactMatch && searchEmpty) {
       searchEmpty.style.display = "block";
       if (relatedTitle) relatedTitle.style.display = "block";
@@ -261,10 +283,11 @@
       if (relatedTitle) relatedTitle.style.display = "none";
     }
 
+    // Render primary results
     var shown = toShow.slice(0, PER_PAGE).map(function (x) { return x.job; });
     renderCards(resultsGrid, shown);
 
-    // If the filter was narrow (few results), add a "More opportunities" section
+    // Sparse results section (More opportunities)
     var hasMoreSection = document.getElementById("more-section");
     if (hasMoreSection) hasMoreSection.remove();
 
@@ -276,7 +299,6 @@
         return !shownUrls[j.url];
       });
 
-      // Shuffle slightly so it isn't always the same 9 jobs
       extras.sort(function () { return 0.5 - Math.random(); });
       var moreJobs = extras.slice(0, PER_PAGE);
 
