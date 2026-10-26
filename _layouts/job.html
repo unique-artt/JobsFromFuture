@@ -39,19 +39,89 @@ layout: default
   .apply-btn {
     display: inline-block;
     padding: 12px 28px;
-    background: #2563eb;
+    background: #f97316;
     color: #fff;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     border-radius: 8px;
     transition: background 0.15s;
   }
-  .apply-btn:hover { background: #1d4ed8; }
+  .apply-btn:hover { background: #ea580c; }
   .apply-note {
     display: block;
     margin-top: 8px;
     font-size: 12px;
     color: #9ca3af;
+  }
+
+  .job-motive {
+    max-width: 800px;
+    margin: 32px auto 0;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff7ed 0%, #f5f3ff 100%);
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+  }
+  .job-motive::before,
+  .job-motive::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    pointer-events: none;
+  }
+  .job-motive::before {
+    width: 220px; height: 220px;
+    background: #f97316;
+    opacity: 0.18;
+    top: -100px; left: -60px;
+  }
+  .job-motive::after {
+    width: 200px; height: 200px;
+    background: #7c3aed;
+    opacity: 0.14;
+    bottom: -100px; right: -50px;
+  }
+  .job-motive-inner { position: relative; z-index: 1; }
+  .job-motive .motive-mark {
+    font-family: Georgia, serif;
+    font-size: 48px;
+    line-height: 1;
+    color: #f97316;
+    margin-bottom: 6px;
+  }
+  .job-motive .motive-line {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.6px;
+    color: #111827;
+    margin-bottom: 10px;
+  }
+  .job-motive .motive-sub {
+    font-size: 14px;
+    color: #6b7280;
+    max-width: 480px;
+    margin: 0 auto 24px;
+  }
+  .back-btn {
+    display: inline-block;
+    padding: 11px 26px;
+    background: #111827;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 999px;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .back-btn:hover { background: #f97316; transform: translateY(-1px); }
+
+  @media (max-width: 640px) {
+    .job-page { margin: 20px 16px; padding: 24px; }
+    .job-motive { margin: 24px 16px 0; padding: 32px 22px; }
+    .job-motive .motive-line { font-size: 19px; }
   }
 </style>
 
@@ -73,8 +143,17 @@ layout: default
   </div>
 
   <a class="apply-btn" href="{{ page.apply_redirect }}" rel="nofollow">Apply Now</a>
-  <span class="apply-note">Apply directly on the company's website</span>
+  <span class="apply-note">Apply directly on the company's website.</span>
 </article>
+
+<section class="job-motive">
+  <div class="job-motive-inner">
+    <div class="motive-mark">&ldquo;</div>
+    <p class="motive-line">Great things start with one bold step.</p>
+    <p class="motive-sub">You've read the role, weighed the fit, and made it this far. That's already progress — now take the next step.</p>
+    <a href="/" class="back-btn">← Back to all jobs</a>
+  </div>
+</section>
 
 {% if page.type != "task" %}
 <script type="application/ld+json">
