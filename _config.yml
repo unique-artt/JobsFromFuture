@@ -16,6 +16,10 @@ defaults:
       type: "jobs"
     values:
       layout: job
+  - scope:
+      path: "go"
+    values:
+      sitemap: false
 
 # Plugins (GitHub Pages supported)
 plugins:
