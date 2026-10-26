@@ -1,0 +1,18 @@
+---
+layout: null
+---
+[
+  {% for job in site.jobs %}
+  {
+    "title": {{ job.title | jsonify }},
+    "url": {{ job.url | jsonify }},
+    "location": {{ job.location | jsonify }},
+    "description": {{ job.description | jsonify }},
+    "body": {{ job.content | strip_html | normalize_whitespace | jsonify }},
+    "remote": {{ job.remote | default: false }},
+    "type": {{ job.type | jsonify }},
+    "employmentType": {{ job.employmentType | jsonify }},
+    "pay": {% if job.type == "task" %}{{ job.payLabel | jsonify }}{% else %}{{ "$" | append: job.salaryMin | append: "–$" | append: job.salaryMax | append: "/hr" | jsonify }}{% endif %}
+  }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]

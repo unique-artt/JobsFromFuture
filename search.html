@@ -1,0 +1,177 @@
+---
+layout: default
+title: "Search Jobs | Jobs From Future"
+description: "Search remote, contract, and task-based roles by title, skill, keyword, or location."
+---
+<style>
+  .search-hero {
+    padding: 48px 24px 32px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .search-hero h1 {
+    font-size: 32px;
+    letter-spacing: -1.2px;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+  .search-hero p {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .search-bar {
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 6px;
+    transition: border-color 0.15s;
+  }
+  .search-bar:focus-within { border-color: var(--orange); }
+  .search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 16px;
+    font-size: 15px;
+    background: transparent;
+  }
+  .search-bar select {
+    border: none;
+    border-left: 1px solid var(--line);
+    outline: none;
+    padding: 12px 14px;
+    font-size: 14px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    max-width: 200px;
+  }
+  .search-bar button {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .search-bar button:hover { background: var(--orange-dark); }
+
+  .search-results {
+    max-width: 1140px;
+    margin: 40px auto 0;
+    padding: 0 24px;
+  }
+  .search-status {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .search-status strong { color: var(--ink); }
+  .search-empty {
+    text-align: center;
+    padding: 40px 24px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 14px;
+    margin-bottom: 32px;
+  }
+  .search-empty h2 {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .search-empty p {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .related-title {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.4px;
+    margin-bottom: 20px;
+  }
+  .job-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 900px) { .job-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .job-grid { grid-template-columns: 1fr; } }
+  .job-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    min-height: 150px;
+  }
+  .job-card:hover {
+    border-color: var(--orange);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.12);
+    transform: translateY(-2px);
+  }
+  .job-card h3 {
+    font-size: 16px;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .job-card .card-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: auto;
+    padding-bottom: 14px;
+  }
+  .job-card .card-salary {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--orange);
+  }
+  .back-home {
+    display: inline-block;
+    margin-top: 40px;
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  @media (max-width: 640px) {
+    .search-bar { flex-direction: column; }
+    .search-bar select { border-left: none; border-top: 1px solid var(--line); max-width: 100%; }
+  }
+</style>
+
+<section class="search-hero">
+  <h1>Search jobs</h1>
+  <p>Find roles by title, skill, keyword, or location.</p>
+  <div class="search-bar">
+    <input type="text" id="q-input" placeholder="Job title, skill, or keyword…" aria-label="Search jobs">
+    <select id="loc-select" aria-label="Location">
+      <option value="">All locations</option>
+    </select>
+    <button id="search-btn">Search</button>
+  </div>
+</section>
+
+<div class="search-results" id="search-results">
+  <p class="search-status" id="search-status"></p>
+  <div class="search-empty" id="search-empty" style="display:none;">
+    <h2>No exact match found</h2>
+    <p>We couldn't find a job with that term. Try a related search below.</p>
+  </div>
+  <h2 class="related-title" id="related-title" style="display:none;">Related jobs</h2>
+  <div class="job-grid" id="results-grid"></div>
+  <a href="/" class="back-home">← Back to all jobs</a>
+</div>
+
+<script src="/assets/js/search.js" defer></script>
