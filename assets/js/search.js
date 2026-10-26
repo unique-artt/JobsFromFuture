@@ -37,11 +37,16 @@
 
   function buildLocationOptions(selected) {
     if (!locSelect) return;
+    
+    // FIX: Wipe the dropdown clean before adding anything
+    locSelect.innerHTML = '<option value="">All locations</option>';
+
     var seen = {};
     allJobs.forEach(function (j) {
       var n = normalizeLocation(j.location || "");
       if (n) seen[n] = true;
     });
+    
     seen["Remote"] = true;
 
     var names = Object.keys(seen).filter(function (n) { return n !== "Remote"; }).sort();
@@ -58,7 +63,10 @@
 
   // ---------- Homepage ----------
   function initHomepage() {
-    buildLocationOptions("");
+    // Only build location options if we are actually on the homepage
+    if (grid) {
+      buildLocationOptions("");
+    }
 
     if (qInput && suggestionsBox) {
       qInput.addEventListener("input", function () {
@@ -176,6 +184,8 @@
     var loc = (params.get("loc") || "").trim();
 
     if (qInput) qInput.value = q;
+    
+    // FIX: Build the options for the search page cleanly
     buildLocationOptions(loc);
 
     function looseContains(haystack, needle) {
@@ -255,7 +265,6 @@
     renderCards(resultsGrid, shown);
 
     // If the filter was narrow (few results), add a "More opportunities" section
-    // with up to 9 jobs from outside the current result set.
     var hasMoreSection = document.getElementById("more-section");
     if (hasMoreSection) hasMoreSection.remove();
 
