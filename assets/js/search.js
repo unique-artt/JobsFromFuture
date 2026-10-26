@@ -18,6 +18,7 @@
 
   var allJobs = [];
   var PER_PAGE = 9;
+  var SPARSE_THRESHOLD = 3; // if a filter returns 3 or fewer jobs, show extra suggestions
 
   function fetchJobs(cb) {
     fetch("/search.json")
@@ -26,22 +27,31 @@
       .catch(function () { cb(); });
   }
 
+  function normalizeLocation(raw) {
+    if (!raw) return "";
+    var m = raw.match(/^Remote\s*\((.+)\)$/i);
+    if (m) return m[1].trim();
+    if (/^remote$/i.test(raw.trim())) return "Remote";
+    return raw.trim();
+  }
+
   function buildLocationOptions(selected) {
     if (!locSelect) return;
-    var locs = {};
+    var seen = {};
     allJobs.forEach(function (j) {
-      var loc = (j.location || "").trim();
-      if (loc) locs[loc] = true;
+      var n = normalizeLocation(j.location || "");
+      if (n) seen[n] = true;
     });
-    // Always offer the generic "Remote" bucket
-    locs["Remote"] = true;
+    seen["Remote"] = true;
 
-    Object.keys(locs).sort().forEach(function (loc) {
-      if (loc === "Remote") return; // handled below so it sits first among remote entries
+    var names = Object.keys(seen).filter(function (n) { return n !== "Remote"; }).sort();
+    var ordered = ["Remote"].concat(names);
+
+    ordered.forEach(function (name) {
       var opt = document.createElement("option");
-      opt.value = loc;
-      opt.textContent = loc;
-      if (loc === selected) opt.selected = true;
+      opt.value = name;
+      opt.textContent = name;
+      if (name === selected) opt.selected = true;
       locSelect.appendChild(opt);
     });
   }
@@ -55,12 +65,12 @@
         var q = qInput.value.trim().toLowerCase();
         suggestionsBox.innerHTML = "";
         if (!q) { suggestionsBox.classList.remove("open"); return; }
-        var seen = {};
+        var seenTitles = {};
         var matches = [];
         allJobs.forEach(function (j) {
           var t = (j.title || "").toLowerCase();
-          if (t.indexOf(q) !== -1 && !seen[j.title]) {
-            seen[j.title] = true;
+          if (t.indexOf(q) !== -1 && !seenTitles[j.title]) {
+            seenTitles[j.title] = true;
             matches.push(j.title);
           }
         });
@@ -134,6 +144,30 @@
     render();
   }
 
+  // ---------- Shared: render a job card ----------
+  function jobCardHTML(j) {
+    var badge = "";
+    if (j.type === "task") badge = '<span class="card-badge badge-task">Task</span>';
+    else if (j.remote) badge = '<span class="card-badge badge-remote">Remote</span>';
+    else badge = '<span class="card-badge badge-onsite">On-site</span>';
+    return badge +
+      "<h3>" + j.title + "</h3>" +
+      '<div class="card-meta">' + (j.location || "") +
+      (j.employmentType ? " · " + j.employmentType : "") + "</div>" +
+      '<div class="card-salary">' + (j.pay || "") + "</div>";
+  }
+
+  function renderCards(container, list) {
+    container.innerHTML = "";
+    list.forEach(function (j) {
+      var a = document.createElement("a");
+      a.className = "job-card";
+      a.href = j.url;
+      a.innerHTML = jobCardHTML(j);
+      container.appendChild(a);
+    });
+  }
+
   // ---------- Search results page ----------
   function initResults() {
     if (!resultsGrid) return;
@@ -144,18 +178,16 @@
     if (qInput) qInput.value = q;
     buildLocationOptions(loc);
 
-    function looseMatch(haystack, needle) {
+    function looseContains(haystack, needle) {
       if (!needle) return true;
       return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
     }
 
     function jobMatchesLocation(job, wanted) {
       if (!wanted) return true;
-      var jl = job.location || "";
-      if (wanted.toLowerCase() === "remote") {
-        return job.remote === true || looseMatch(jl, "remote");
-      }
-      return looseMatch(jl, wanted);
+      if (wanted.toLowerCase() === "remote") return job.remote === true;
+      var n = normalizeLocation(job.location || "");
+      return looseContains(n, wanted) || looseContains(job.location || "", wanted);
     }
 
     function scoreJob(job, term) {
@@ -181,17 +213,11 @@
 
     var keywordMatches = q ? scored.filter(function (x) { return x.score > 0; }) : scored;
 
-    // If location is selected and keyword found nothing, still show every job in that location
     var toShow;
     var noExactMatch = false;
     if (q && keywordMatches.length === 0) {
-      if (loc && locationFiltered.length > 0) {
-        toShow = locationFiltered.map(function (j) { return { job: j, score: 0 }; });
-        noExactMatch = true;
-      } else {
-        toShow = scored;
-        noExactMatch = true;
-      }
+      noExactMatch = true;
+      toShow = locationFiltered.map(function (j) { return { job: j, score: 0 }; });
     } else {
       toShow = keywordMatches.length ? keywordMatches : scored;
     }
@@ -226,22 +252,36 @@
     }
 
     var shown = toShow.slice(0, PER_PAGE).map(function (x) { return x.job; });
-    resultsGrid.innerHTML = "";
-    shown.forEach(function (j) {
-      var a = document.createElement("a");
-      a.className = "job-card";
-      a.href = j.url;
-      var badge = "";
-      if (j.type === "task") badge = '<span class="card-badge badge-task">Task</span>';
-      else if (j.remote) badge = '<span class="card-badge badge-remote">Remote</span>';
-      else badge = '<span class="card-badge badge-onsite">On-site</span>';
-      a.innerHTML = badge +
-        "<h3>" + j.title + "</h3>" +
-        '<div class="card-meta">' + (j.location || "") +
-        (j.employmentType ? " · " + j.employmentType : "") + "</div>" +
-        '<div class="card-salary">' + (j.pay || "") + "</div>";
-      resultsGrid.appendChild(a);
-    });
+    renderCards(resultsGrid, shown);
+
+    // If the filter was narrow (few results), add a "More opportunities" section
+    // with up to 9 jobs from outside the current result set.
+    var hasMoreSection = document.getElementById("more-section");
+    if (hasMoreSection) hasMoreSection.remove();
+
+    if (shown.length > 0 && shown.length <= SPARSE_THRESHOLD) {
+      var shownUrls = {};
+      shown.forEach(function (j) { shownUrls[j.url] = true; });
+
+      var extras = allJobs.filter(function (j) {
+        return !shownUrls[j.url];
+      });
+
+      // Shuffle slightly so it isn't always the same 9 jobs
+      extras.sort(function () { return 0.5 - Math.random(); });
+      var moreJobs = extras.slice(0, PER_PAGE);
+
+      if (moreJobs.length > 0) {
+        var moreSection = document.createElement("section");
+        moreSection.id = "more-section";
+        moreSection.style.marginTop = "48px";
+        moreSection.innerHTML =
+          '<h2 class="related-title" style="display:block;margin-bottom:20px;">More opportunities you might like</h2>' +
+          '<div class="job-grid" id="more-grid"></div>';
+        resultsGrid.parentNode.insertBefore(moreSection, resultsGrid.nextSibling);
+        renderCards(document.getElementById("more-grid"), moreJobs);
+      }
+    }
 
     if (qInput) {
       qInput.addEventListener("keydown", function (e) {
