@@ -20,7 +20,7 @@ layout: default
   .hero-shape-1 { width: 420px; height: 420px; background: var(--orange); top: -180px; left: -120px; }
   .hero-shape-2 { width: 380px; height: 380px; background: var(--purple); bottom: -200px; right: -100px; opacity: 0.22; }
   .hero-shape-3 { width: 220px; height: 220px; background: var(--orange); top: 40%; right: 18%; opacity: 0.12; filter: blur(50px); }
-  .hero-inner { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
+  .hero-inner { position: relative; z-index: 10; max-width: 820px; margin: 0 auto; }
   .hero-eyebrow {
     display: inline-block;
     font-size: 13px;
@@ -59,7 +59,7 @@ layout: default
     padding: 6px;
     box-shadow: 0 6px 24px rgba(17, 24, 39, 0.06);
     transition: border-color 0.15s, box-shadow 0.15s;
-    z-index: 30;
+    z-index: 50;
   }
   .hero-search:focus-within {
     border-color: var(--orange);
@@ -111,7 +111,7 @@ layout: default
     max-height: 280px;
     overflow-y: auto;
     display: none;
-    z-index: 60;
+    z-index: 9999;
     text-align: left;
   }
   .suggestions.open { display: block; }
@@ -125,7 +125,7 @@ layout: default
   .suggestion-item:last-child { border-bottom: none; }
   .suggestion-item:hover { background: #fff7ed; color: var(--orange); }
 
-  .tabs-wrap { max-width: 1140px; margin: 40px auto 0; padding: 0 24px; position: relative; z-index: 1; }
+  .tabs-wrap { max-width: 1140px; margin: 40px auto 0; padding: 0 24px; }
   .tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
@@ -151,8 +151,6 @@ layout: default
     display: flex;
     align-items: center;
     gap: 16px;
-    position: relative;
-    z-index: 1;
   }
   .arrow {
     flex: 0 0 auto;
