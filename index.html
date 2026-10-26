@@ -3,61 +3,252 @@ layout: default
 ---
 <style>
   .hero {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    padding: 80px 24px 70px;
     text-align: center;
-    padding: 60px 20px 40px;
+    border-bottom: 1px solid var(--line);
   }
-  .hero h1 {
-    font-size: 36px;
-    letter-spacing: -1px;
-    margin-bottom: 12px;
+  .hero-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
   }
-  .hero h1 span { color: #2563eb; }
-  .hero p {
-    font-size: 16px;
-    color: #6b7280;
-    max-width: 560px;
+  .hero-shape-1 {
+    width: 420px; height: 420px;
+    background: var(--orange);
+    top: -180px; left: -120px;
+  }
+  .hero-shape-2 {
+    width: 380px; height: 380px;
+    background: var(--purple);
+    bottom: -200px; right: -100px;
+    opacity: 0.22;
+  }
+  .hero-shape-3 {
+    width: 220px; height: 220px;
+    background: var(--orange);
+    top: 40%; right: 18%;
+    opacity: 0.12;
+    filter: blur(50px);
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
     margin: 0 auto;
   }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--purple);
+    background: var(--purple-light);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 52px;
+    line-height: 1.1;
+    letter-spacing: -1.8px;
+    font-weight: 900;
+    margin-bottom: 18px;
+  }
+  .hero h1 em { font-style: normal; color: var(--orange); }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+  .hero-search {
+    max-width: 620px;
+    margin: 0 auto 18px;
+    position: relative;
+  }
+  .hero-search input {
+    width: 100%;
+    padding: 18px 22px;
+    font-size: 17px;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    outline: none;
+    background: #fff;
+    box-shadow: 0 6px 24px rgba(17, 24, 39, 0.06);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .hero-search input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 6px 28px rgba(249, 115, 22, 0.18);
+  }
+  .hero-motive {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .hero-motive strong { color: var(--ink); }
 
+  .tabs-wrap {
+    max-width: 1140px;
+    margin: 40px auto 0;
+    padding: 0 24px;
+  }
+  .tabs {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 11px 20px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--orange); color: var(--orange); }
+  .tab.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+  .tab.active:hover { background: var(--ink); color: #fff; }
+
+  .grid-section {
+    max-width: 1140px;
+    margin: 32px auto 0;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .arrow {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .arrow:hover:not(:disabled) {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+  .arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .grid-wrap { flex: 1; min-width: 0; }
   .job-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    margin: 40px 0 20px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 900px) {
+    .job-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .job-grid { grid-template-columns: 1fr; }
   }
 
   .job-card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
     padding: 20px;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    min-height: 160px;
   }
   .job-card:hover {
-    border-color: #2563eb;
-    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+    border-color: var(--orange);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.12);
+    transform: translateY(-2px);
   }
+  .job-card .card-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    align-self: flex-start;
+  }
+  .badge-remote { background: var(--purple-light); color: var(--purple); }
+  .badge-task { background: #fef3c7; color: #b45309; }
+  .badge-onsite { background: #f3f4f6; color: var(--muted); }
+
   .job-card h3 {
-    font-size: 17px;
+    font-size: 16px;
+    line-height: 1.35;
     margin-bottom: 8px;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
+    font-weight: 700;
   }
   .job-card .card-meta {
     font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 10px;
+    color: var(--muted);
+    margin-bottom: auto;
+    padding-bottom: 14px;
   }
   .job-card .card-salary {
-    font-size: 14px;
-    font-weight: 600;
-    color: #059669;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--orange);
   }
 
-  .no-results {
+  .pager {
+    max-width: 1140px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .pager-btn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .pager-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
+  .pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .empty-state {
     text-align: center;
-    padding: 40px 20px;
-    color: #9ca3af;
+    padding: 60px 20px;
+    color: var(--muted);
     font-size: 15px;
     display: none;
   }
@@ -66,46 +257,273 @@ layout: default
     text-align: center;
     padding: 70px 24px;
     background: #fff;
-    border: 1px dashed #d1d5db;
+    border: 1px dashed var(--line);
     border-radius: 16px;
     margin: 40px 0 20px;
   }
-  .coming-soon h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    letter-spacing: -0.5px;
+  .coming-soon h2 { font-size: 24px; margin-bottom: 10px; }
+  .coming-soon p { font-size: 15px; color: var(--muted); }
+
+  /* Below-grid sections */
+  .why-section {
+    max-width: 1140px;
+    margin: 80px auto 0;
+    padding: 0 24px;
   }
-  .coming-soon p {
+  .section-head { text-align: center; margin-bottom: 40px; }
+  .section-head h2 {
+    font-size: 32px;
+    letter-spacing: -1px;
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+  .section-head p { font-size: 16px; color: var(--muted); }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 800px) {
+    .why-grid { grid-template-columns: 1fr; }
+  }
+  .why-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .why-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 26px;
+  }
+  .why-icon-1 { background: #fff7ed; color: var(--orange); }
+  .why-icon-2 { background: var(--purple-light); color: var(--purple); }
+  .why-icon-3 { background: #fff7ed; color: var(--orange); }
+  .why-card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .why-card p { font-size: 14px; color: var(--muted); }
+
+  .quote-band {
+    margin-top: 80px;
+    background: var(--purple);
+    padding: 70px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .quote-band::before,
+  .quote-band::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .quote-band::before {
+    width: 300px; height: 300px;
+    background: var(--orange);
+    top: -120px; left: -80px;
+  }
+  .quote-band::after {
+    width: 260px; height: 260px;
+    background: #a78bfa;
+    bottom: -120px; right: -60px;
+  }
+  .quote-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .quote-mark {
+    font-size: 64px;
+    line-height: 1;
+    color: rgba(255,255,255,0.35);
+    font-family: Georgia, serif;
+    margin-bottom: 8px;
+  }
+  .quote-text {
+    font-size: 26px;
+    line-height: 1.4;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.6px;
+    margin-bottom: 18px;
+  }
+  .quote-author {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 640px) {
+    .quote-text { font-size: 20px; }
+  }
+
+  .cta-section {
+    max-width: 1140px;
+    margin: 80px auto 0;
+    padding: 0 24px;
+    text-align: center;
+  }
+  .cta-box {
+    background: linear-gradient(135deg, #fff7ed 0%, #f5f3ff 100%);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 60px 24px;
+  }
+  .cta-box h2 {
+    font-size: 30px;
+    letter-spacing: -1px;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+  .cta-box p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 28px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-weight: 800;
     font-size: 15px;
-    color: #6b7280;
-    max-width: 480px;
-    margin: 0 auto;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .cta-btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+  @media (max-width: 640px) {
+    .hero { padding: 56px 20px 50px; }
+    .hero h1 { font-size: 34px; letter-spacing: -1.2px; }
+    .hero-sub { font-size: 16px; }
+    .hero-search input { padding: 15px 18px; font-size: 16px; }
+    .grid-section { gap: 8px; padding: 0 16px; }
+    .arrow { width: 38px; height: 38px; font-size: 17px; }
   }
 </style>
 
 <section class="hero">
-  <h1>Find your next <span>opportunity</span></h1>
-  <p>Curated roles from leading companies and AI labs — remote and on-site, updated regularly.</p>
+  <div class="hero-shape hero-shape-1"></div>
+  <div class="hero-shape hero-shape-2"></div>
+  <div class="hero-shape hero-shape-3"></div>
+  <div class="hero-inner">
+    <span class="hero-eyebrow">Fresh roles, added daily</span>
+    <h1>Find your next <em>opportunity</em></h1>
+    <p class="hero-sub">Curated roles from leading companies and AI labs — remote, on-site, contract, and full-time.</p>
+    <div class="hero-search">
+      <input type="text" id="job-search" placeholder="Search by job title, skill, or location…" aria-label="Search jobs">
+    </div>
+    <p class="hero-motive"><strong>Your next chapter starts with one click.</strong> Explore roles built for where you're going.</p>
+  </div>
 </section>
 
-<div class="container">
-  {% assign job_count = site.jobs | size %}
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="all">All jobs</button>
+    <button class="tab" data-tab="remote">Remote</button>
+    <button class="tab" data-tab="task">Tasks</button>
+    <button class="tab" data-tab="contract">Contracts</button>
+    <button class="tab" data-tab="fulltime">Full-time</button>
+  </div>
+</div>
 
-  {% if job_count >= 1 %}
+{% assign job_count = site.jobs | size %}
+{% if job_count >= 1 %}
+<div class="grid-section">
+  <button class="arrow" id="prev-arrow" aria-label="Previous page">‹</button>
+  <div class="grid-wrap">
     <div class="job-grid" id="job-grid">
       {% for job in site.jobs %}
-      <a class="job-card" href="{{ job.url }}" data-title="{{ job.title | downcase }}" data-location="{{ job.location | downcase }}">
+      <a class="job-card"
+         href="{{ job.url }}"
+         data-title="{{ job.title | downcase }}"
+         data-location="{{ job.location | downcase }}"
+         data-remote="{{ job.remote }}"
+         data-type="{{ job.type }}"
+         data-employment="{{ job.employmentType }}">
+        {% if job.type == "task" %}
+          <span class="card-badge badge-task">Task</span>
+        {% elsif job.remote %}
+          <span class="card-badge badge-remote">Remote</span>
+        {% else %}
+          <span class="card-badge badge-onsite">On-site</span>
+        {% endif %}
         <h3>{{ job.title }}</h3>
         <div class="card-meta">{{ job.location }}{% if job.employmentType %} · {{ job.employmentType | capitalize }}{% endif %}</div>
         <div class="card-salary">{% if job.type == "task" %}{{ job.payLabel }}{% else %}${{ job.salaryMin }}–${{ job.salaryMax }}/hr{% endif %}</div>
       </a>
       {% endfor %}
     </div>
-    <p class="no-results" id="no-results">No jobs match your search. Try a different keyword.</p>
-  {% else %}
-    <div class="coming-soon">
-      <h2>Coming Soon</h2>
-      <p>We're curating a list of high-quality roles. New opportunities are being added daily — check back shortly.</p>
-    </div>
-  {% endif %}
+  </div>
+  <button class="arrow" id="next-arrow" aria-label="Next page">›</button>
 </div>
+
+<div class="pager">
+  <button class="pager-btn" id="prev-page">‹ Prev</button>
+  <span id="page-indicator">Page 1 of 1</span>
+  <button class="pager-btn" id="next-page">Next ›</button>
+</div>
+
+<p class="empty-state" id="no-results">No jobs match your search. Try a different keyword or tab.</p>
+
+<!-- Below the grid -->
+<section class="why-section">
+  <div class="section-head">
+    <h2>Built for your next move</h2>
+    <p>Everything you need to find a role that fits, without the noise.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon why-icon-1">◎</div>
+      <h3>Curated roles</h3>
+      <p>Every listing is reviewed and structured, so you spend time applying — not filtering junk.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon why-icon-2">◇</div>
+      <h3>Clear pay, upfront</h3>
+      <p>Hourly rates and flat fees are shown on every card. No guessing, no surprises.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon why-icon-3">↗</div>
+      <h3>Direct to the source</h3>
+      <p>Apply straight on the company's site. We point you to the real opportunity.</p>
+    </div>
+  </div>
+</section>
+
+<section class="quote-band">
+  <div class="quote-inner">
+    <div class="quote-mark">&ldquo;</div>
+    <p class="quote-text">The future belongs to those who prepare for it today.</p>
+    <p class="quote-author">— Malcolm X</p>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-box">
+    <h2>Ready to find your role?</h2>
+    <p>New opportunities are added regularly. Search, filter, and apply in a few clicks.</p>
+    <a href="#job-grid" class="cta-btn">Browse all jobs</a>
+  </div>
+</section>
+
+{% else %}
+<div class="container">
+  <div class="coming-soon">
+    <h2>Coming Soon</h2>
+    <p>We're curating a list of high-quality roles. New opportunities are being added daily — check back shortly.</p>
+  </div>
+</div>
+{% endif %}

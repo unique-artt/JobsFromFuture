@@ -8,21 +8,35 @@
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #f97316;
+      --orange-dark: #ea580c;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --ink: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --bg: #ffffff;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: #1a1a1a;
-      background: #f7f8fa;
+      color: var(--ink);
+      background: var(--bg);
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
 
     .header {
       background: #fff;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      padding: 18px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
     .header-inner {
-      max-width: 1100px;
+      max-width: 1140px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -30,60 +44,67 @@
       gap: 16px;
     }
     .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: #111;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: var(--ink);
     }
-    .logo span { color: #2563eb; }
-
-    .search-bar {
-      flex: 1;
-      max-width: 480px;
+    .logo-box {
+      background: var(--orange);
+      color: #fff;
+      padding: 4px 10px 5px;
+      border-radius: 7px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+      font-size: 20px;
+      line-height: 1;
     }
-    .search-bar input {
-      width: 100%;
-      padding: 10px 14px;
+    .header-links {
+      display: flex;
+      gap: 20px;
       font-size: 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: #fafafa;
-      outline: none;
+      color: var(--muted);
     }
-    .search-bar input:focus {
-      border-color: #2563eb;
-      background: #fff;
-    }
+    .header-links a:hover { color: var(--orange); }
 
     .container {
-      max-width: 1100px;
+      max-width: 1140px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
     }
 
     .footer {
-      margin-top: 60px;
-      padding: 30px 20px;
-      border-top: 1px solid #e5e7eb;
-      background: #fff;
+      margin-top: 80px;
+      padding: 36px 24px;
+      border-top: 1px solid var(--line);
+      background: #fafafa;
       text-align: center;
       font-size: 13px;
-      color: #6b7280;
+      color: var(--muted);
     }
+    .footer a { color: var(--muted); margin: 0 8px; }
+    .footer a:hover { color: var(--orange); }
 
     @media (max-width: 640px) {
-      .header-inner { flex-direction: column; align-items: stretch; }
-      .search-bar { max-width: 100%; }
+      .header-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .header-links { font-size: 13px; gap: 14px; }
     }
   </style>
 </head>
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="/" class="logo">Jobs From <span>Future</span></a>
-      <div class="search-bar">
-        <input type="text" id="job-search" placeholder="Search jobs by title or keyword..." aria-label="Search jobs">
-      </div>
+      <a href="/" class="logo">
+        JOBS FROM <span class="logo-box">FUTURE</span>
+      </a>
+      <nav class="header-links">
+        <a href="/">All jobs</a>
+        <a href="/disclaimer.html">Disclaimer</a>
+        <a href="/privacy.html">Privacy</a>
+      </nav>
     </div>
   </header>
 
@@ -92,11 +113,11 @@
   </main>
 
   <footer class="footer">
-<p>&copy; {{ site.time | date: '%Y' }} Jobs From Future. All rights reserved.</p>
-<p style="margin-top:8px;">
-  <a href="/disclaimer.html" style="color:#6b7280;margin:0 8px;">Disclaimer</a>
-  <a href="/privacy.html" style="color:#6b7280;margin:0 8px;">Privacy Policy</a>
-</p>
+    <p>&copy; {{ site.time | date: '%Y' }} Jobs From Future. All rights reserved.</p>
+    <p style="margin-top:8px;">
+      <a href="/disclaimer.html">Disclaimer</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </p>
   </footer>
 
   <script src="/assets/js/search.js" defer></script>
