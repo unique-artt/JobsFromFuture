@@ -342,7 +342,8 @@ layout: default
   <button class="arrow" id="prev-arrow" aria-label="Previous page">‹</button>
   <div class="grid-wrap">
     <div class="job-grid" id="job-grid">
-      {% for job in site.jobs %}
+      {% assign sorted_jobs = site.jobs | sort: "priority" | reverse %}
+      {% for job in sorted_jobs %}
       <a class="job-card"
          href="{{ job.url }}"
          data-title="{{ job.title | downcase }}"
