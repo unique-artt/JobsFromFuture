@@ -6,7 +6,7 @@ date: 2026-10-31
 validThrough: 2026-11-30
 employmentType: "CONTRACTOR"
 hiringOrganization: "Leading AI Lab"
-priority: 1
+priority: 5
 description: "Part-time remote research work for a leading AI lab. Help benchmark and improve AI models by creating research questions, answers, and evaluation materials. Requires a Mac with an M-series chip or Intel processor."
 salaryMin: 40
 salaryMax: 80

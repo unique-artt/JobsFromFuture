@@ -6,7 +6,7 @@ date: 2026-10-31
 validThrough: 2026-11-30
 employmentType: "CONTRACTOR"
 hiringOrganization: "Leading AI Lab"
-priority: 1 
+priority: 5
 description: "Remote hourly role to evaluate AI assistants on realistic everyday tasks. Give the assistant tasks, steer it over multiple turns, and rate the deliverables against a professional standard."
 salaryMin: 30
 salaryMax: 30

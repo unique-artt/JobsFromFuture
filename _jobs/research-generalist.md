@@ -6,6 +6,7 @@ date: 2026-10-25
 validThrough: 2026-11-25
 employmentType: "PART_TIME"
 hiringOrganization: "Leading AI Lab"
+priority: 5
 description: "Part-time remote research work for a leading AI lab. Help benchmark and improve AI models by creating research questions, answers, and evaluation materials."
 salaryMin: 50
 salaryMax: 60
