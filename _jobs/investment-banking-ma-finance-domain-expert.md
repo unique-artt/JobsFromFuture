@@ -6,6 +6,7 @@ date: 2026-10-26
 validThrough: 2026-11-26
 employmentType: "FULL_TIME"
 hiringOrganization: "Cincinnatus LLC"
+priority: 1
 description: "Hybrid full-time W-2 role in the Bay Area for a senior finance domain expert. Review finance knowledge work, write instruction specs and golden solutions, and build benchmarks that improve how frontier AI models reason about financial work."
 salaryMin: 100
 salaryMax: 150

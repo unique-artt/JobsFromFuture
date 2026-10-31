@@ -6,6 +6,7 @@ date: 2026-10-25
 validThrough: 2026-11-25
 employmentType: "CONTRACTOR"
 hiringOrganization: "Leading AI Lab"
+priority: 1
 description: "Remote AI training and evaluation work for experienced investment bankers. Build financial models, review model-generated comps and deal materials, and write grading rubrics for frontier AI systems."
 salaryMin: 100
 salaryMax: 130

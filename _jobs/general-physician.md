@@ -6,6 +6,7 @@ date: 2026-10-26
 validThrough: 2026-11-26
 employmentType: "CONTRACTOR"
 hiringOrganization: "Leading AI Lab"
+priority: 1
 description: "Remote hourly role for practicing MDs and DOs. Evaluate health AI models for clinical accuracy, safety, and alignment with medical standards across diagnosis, clinical reasoning, and care workflows."
 salaryMin: 150
 salaryMax: 150

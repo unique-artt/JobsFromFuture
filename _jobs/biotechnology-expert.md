@@ -6,6 +6,7 @@ date: 2026-10-25
 validThrough: 2026-11-25
 employmentType: "CONTRACTOR"
 hiringOrganization: "Leading AI Lab"
+priority: 1
 description: "Remote AI training and evaluation work for biotech scientists. Write development problems, grade model-written process and assay development work, and flag proposals that fail developability assessments."
 salaryMin: 110
 salaryMax: 125

@@ -6,6 +6,7 @@ date: 2026-10-26
 validThrough: 2026-11-26
 employmentType: "CONTRACTOR"
 hiringOrganization: "Leading AI Lab"
+priority: 1
 description: "Remote AI training and evaluation work for licensed lawyers. Draft motions and briefs, grade model-drafted contract and discovery work, and flag where a model states the law correctly but would still lose."
 salaryMin: 100
 salaryMax: 150

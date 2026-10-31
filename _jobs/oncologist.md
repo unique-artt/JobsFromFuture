@@ -6,6 +6,7 @@ date: 2026-10-26
 validThrough: 2026-11-26
 employmentType: "CONTRACTOR"
 hiringOrganization: "Leading AI Lab"
+priority: 1
 description: "Remote hourly role for US-based oncologists. Create realistic oncology tasks and clinical trial scenarios, evaluate AI-generated clinical reasoning against standard-of-care guidelines, and identify flawed logic or unsafe recommendations in model outputs."
 salaryMin: 350
 salaryMax: 450
