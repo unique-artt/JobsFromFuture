@@ -6,19 +6,24 @@
   var searchStatus = document.getElementById("search-status");
   var searchEmpty = document.getElementById("search-empty");
   var relatedTitle = document.getElementById("related-title");
+  var searchPager = document.getElementById("search-pager");
+  var searchPageIndicator = document.getElementById("page-indicator");
+  var searchPrevPage = document.getElementById("prev-page");
+  var searchNextPage = document.getElementById("next-page");
+  var moreSection = document.getElementById("more-section");
+  var moreGrid = document.getElementById("more-grid");
 
   var grid = document.getElementById("job-grid");
   var tabsWrap = document.getElementById("tabs");
-  var pageIndicator = document.getElementById("page-indicator");
-  var prevArrow = document.getElementById("prev-arrow");
-  var nextArrow = document.getElementById("next-arrow");
-  var prevPage = document.getElementById("prev-page");
-  var nextPage = document.getElementById("next-page");
-  var noResults = document.getElementById("no-results");
+  var homePageIndicator = document.getElementById("page-indicator"); // Note: this ID is also used on search page, careful
+  var homePrevPage = document.getElementById("prev-page");
+  var homeNextPage = document.getElementById("next-page");
 
   var allJobs = [];
   var PER_PAGE = 9;
-  var SPARSE_THRESHOLD = 3; 
+
+  var searchResults = [];
+  var searchCurrentPage = 1;
 
   function fetchJobs(cb) {
     fetch("/search.json")
@@ -117,19 +122,28 @@
       return true;
     }
 
-    function render() {
+    function renderHome() {
       var matched = allCards.filter(matchesTab);
       var totalPages = Math.max(1, Math.ceil(matched.length / PER_PAGE));
       if (currentPage > totalPages) currentPage = totalPages;
       var start = (currentPage - 1) * PER_PAGE;
       var end = start + PER_PAGE;
+      
       allCards.forEach(function (c) { c.style.display = "none"; });
       matched.slice(start, end).forEach(function (c) { c.style.display = ""; });
-      if (pageIndicator) pageIndicator.textContent = "Page " + currentPage + " of " + totalPages;
+      
+      var homeIndicator = document.querySelector('.pager #page-indicator');
+      var homePrev = document.querySelector('.pager #prev-page');
+      var homeNext = document.querySelector('.pager #next-page');
+      
+      if (homeIndicator) homeIndicator.textContent = "Page " + currentPage + " of " + totalPages;
       var atStart = currentPage === 1;
       var atEnd = currentPage === totalPages || matched.length === 0;
-      [prevArrow, prevPage].forEach(function (el) { if (el) el.disabled = atStart; });
-      [nextArrow, nextPage].forEach(function (el) { if (el) el.disabled = atEnd; });
+      
+      if (homePrev) homePrev.disabled = atStart;
+      if (homeNext) homeNext.disabled = atEnd;
+      
+      var noResults = document.getElementById("no-results");
       if (noResults) noResults.style.display = matched.length === 0 ? "block" : "none";
     }
 
@@ -141,12 +155,16 @@
         btn.classList.add("active");
         currentTab = btn.getAttribute("data-tab");
         currentPage = 1;
-        render();
+        renderHome();
       });
     }
-    [prevArrow, prevPage].forEach(function (el) { if (el) el.addEventListener("click", function () { if (currentPage > 1) { currentPage--; render(); } }); });
-    [nextArrow, nextPage].forEach(function (el) { if (el) el.addEventListener("click", function () { currentPage++; render(); }); });
-    render();
+    
+    var hPrev = document.querySelector('.pager #prev-page');
+    var hNext = document.querySelector('.pager #next-page');
+    if (hPrev) hPrev.addEventListener("click", function () { if (currentPage > 1) { currentPage--; renderHome(); } });
+    if (hNext) hNext.addEventListener("click", function () { currentPage++; renderHome(); });
+    
+    renderHome();
   }
 
   // ---------- Shared: render a job card ----------
@@ -173,6 +191,40 @@
     });
   }
 
+  function renderSearchResults() {
+    var totalPages = Math.max(1, Math.ceil(searchResults.length / PER_PAGE));
+    if (searchCurrentPage > totalPages) searchCurrentPage = totalPages;
+    if (searchCurrentPage < 1) searchCurrentPage = 1;
+
+    var start = (searchCurrentPage - 1) * PER_PAGE;
+    var end = start + PER_PAGE;
+    
+    var shown = searchResults.slice(start, end);
+    renderCards(resultsGrid, shown);
+
+    if (searchResults.length > PER_PAGE) {
+      searchPager.style.display = "flex";
+      searchPageIndicator.textContent = "Page " + searchCurrentPage + " of " + totalPages;
+      searchPrevPage.disabled = searchCurrentPage === 1;
+      searchNextPage.disabled = searchCurrentPage === totalPages;
+    } else {
+      searchPager.style.display = "none";
+    }
+
+    // Sparse results logic
+    if (searchResults.length > 0 && searchResults.length <= 3) {
+      var shownUrls = {};
+      searchResults.forEach(function (j) { shownUrls[j.url] = true; });
+      var extras = allJobs.filter(function (j) { return !shownUrls[j.url]; });
+      extras.sort(function () { return 0.5 - Math.random(); });
+      
+      renderCards(moreGrid, extras.slice(0, 9));
+      moreSection.style.display = "block";
+    } else {
+      moreSection.style.display = "none";
+    }
+  }
+
   // ---------- Search results page ----------
   function initResults() {
     if (!resultsGrid) return;
@@ -181,7 +233,6 @@
     var loc = (params.get("loc") || "").trim();
 
     if (qInput) qInput.value = q;
-    
     buildLocationOptions(loc);
 
     function looseContains(haystack, needle) {
@@ -211,123 +262,71 @@
       return s;
     }
 
-    // 1. Initial filter by location
     var locationFiltered = allJobs.filter(function (j) { return jobMatchesLocation(j, loc); });
-
-    // 2. Score the location-filtered jobs by keyword
-    var scored = locationFiltered
-      .map(function (j) { return { job: j, score: scoreJob(j, q) }; })
-      .sort(function (a, b) { return b.score - a.score; });
-
+    var scored = locationFiltered.map(function (j) { return { job: j, score: scoreJob(j, q) }; }).sort(function (a, b) { return b.score - a.score; });
     var keywordMatches = q ? scored.filter(function (x) { return x.score > 0; }) : scored;
 
-    // 3. If we have a keyword but found 0 matches in that location, fallback to searching the whole board
     var overrideLocation = false;
     if (q && keywordMatches.length === 0 && loc) {
-      var globalMatches = allJobs
-        .map(function (j) { return { job: j, score: scoreJob(j, q) }; })
-        .filter(function (x) { return x.score > 0; })
-        .sort(function (a, b) { return b.score - a.score; });
-      
+      var globalMatches = allJobs.map(function (j) { return { job: j, score: scoreJob(j, q) }; }).filter(function (x) { return x.score > 0; }).sort(function (a, b) { return b.score - a.score; });
       if (globalMatches.length > 0) {
-        // Found the keyword globally, so we use that instead of the empty location search
         keywordMatches = globalMatches;
         locationFiltered = globalMatches.map(function(x) { return x.job; });
         overrideLocation = true;
       }
     }
 
-    var toShow;
     var noExactMatch = false;
-    
     if (q && keywordMatches.length === 0) {
-      // No matches even globally for this keyword (e.g. "zzzz")
       noExactMatch = true;
-      toShow = locationFiltered.map(function (j) { return { job: j, score: 0 }; });
+      searchResults = locationFiltered;
     } else {
-      toShow = keywordMatches.length ? keywordMatches : scored;
+      searchResults = keywordMatches.length ? keywordMatches.map(function(x){return x.job;}) : scored.map(function(x){return x.job;});
     }
 
-    // Build the status text
     if (searchStatus) {
       if (q || loc) {
         if (overrideLocation) {
           searchStatus.innerHTML = "No results for <strong>" + q + "</strong> in <strong>" + loc + "</strong>. Showing <strong>" + q + "</strong> roles from all locations:";
         } else {
-          searchStatus.innerHTML = "Showing results for <strong>" +
-            (q ? q : "all jobs") + "</strong>" +
-            (loc ? " in <strong>" + loc + "</strong>" : "") + ".";
+          searchStatus.innerHTML = "Showing results for <strong>" + (q ? q : "all jobs") + "</strong>" + (loc ? " in <strong>" + loc + "</strong>" : "") + ".";
         }
       } else {
         searchStatus.textContent = "All jobs";
       }
     }
 
-    // Build the "No exact match" block
     if (noExactMatch && searchEmpty) {
       searchEmpty.style.display = "block";
-      if (relatedTitle) relatedTitle.style.display = "block";
+      relatedTitle.style.display = "block";
       if (loc) {
         searchEmpty.querySelector("h2").textContent = "No exact match for that keyword";
-        searchEmpty.querySelector("p").textContent =
-          "Here are all the jobs we have in " + loc + ". Try a different keyword if you want to narrow further.";
-        if (relatedTitle) relatedTitle.textContent = "Jobs in " + loc;
+        searchEmpty.querySelector("p").textContent = "Here are all the jobs we have in " + loc + ". Try a different keyword if you want to narrow further.";
+        relatedTitle.textContent = "Jobs in " + loc;
       } else {
         searchEmpty.querySelector("h2").textContent = "No exact match found";
-        searchEmpty.querySelector("p").textContent =
-          "We couldn't find a job with that term. Try a related search below.";
-        if (relatedTitle) relatedTitle.textContent = "Related jobs";
+        searchEmpty.querySelector("p").textContent = "We couldn't find a job with that term. Try a related search below.";
+        relatedTitle.textContent = "Related jobs";
       }
     } else if (searchEmpty) {
       searchEmpty.style.display = "none";
-      if (relatedTitle) relatedTitle.style.display = "none";
+      relatedTitle.style.display = "none";
     }
 
-    // Render primary results
-    var shown = toShow.slice(0, PER_PAGE).map(function (x) { return x.job; });
-    renderCards(resultsGrid, shown);
+    searchCurrentPage = 1;
+    renderSearchResults();
 
-    // Sparse results section (More opportunities)
-    var hasMoreSection = document.getElementById("more-section");
-    if (hasMoreSection) hasMoreSection.remove();
-
-    if (shown.length > 0 && shown.length <= SPARSE_THRESHOLD) {
-      var shownUrls = {};
-      shown.forEach(function (j) { shownUrls[j.url] = true; });
-
-      var extras = allJobs.filter(function (j) {
-        return !shownUrls[j.url];
-      });
-
-      extras.sort(function () { return 0.5 - Math.random(); });
-      var moreJobs = extras.slice(0, PER_PAGE);
-
-      if (moreJobs.length > 0) {
-        var moreSection = document.createElement("section");
-        moreSection.id = "more-section";
-        moreSection.style.marginTop = "48px";
-        moreSection.innerHTML =
-          '<h2 class="related-title" style="display:block;margin-bottom:20px;">More opportunities you might like</h2>' +
-          '<div class="job-grid" id="more-grid"></div>';
-        resultsGrid.parentNode.insertBefore(moreSection, resultsGrid.nextSibling);
-        renderCards(document.getElementById("more-grid"), moreJobs);
-      }
-    }
+    searchPrevPage.addEventListener("click", function () { if (searchCurrentPage > 1) { searchCurrentPage--; renderSearchResults(); window.scrollTo(0, 300); } });
+    searchNextPage.addEventListener("click", function () { searchCurrentPage++; renderSearchResults(); window.scrollTo(0, 300); });
 
     if (qInput) {
       qInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          window.location.href = "/search.html?q=" + encodeURIComponent(qInput.value.trim()) +
-            "&loc=" + encodeURIComponent(locSelect ? locSelect.value : "");
-        }
+        if (e.key === "Enter") { window.location.href = "/search.html?q=" + encodeURIComponent(qInput.value.trim()) + "&loc=" + encodeURIComponent(locSelect ? locSelect.value : ""); }
       });
     }
     var searchBtn = document.getElementById("search-btn");
     if (searchBtn) {
-      searchBtn.addEventListener("click", function () {
-        window.location.href = "/search.html?q=" + encodeURIComponent(qInput ? qInput.value.trim() : "") +
-          "&loc=" + encodeURIComponent(locSelect ? locSelect.value : "");
-      });
+      searchBtn.addEventListener("click", function () { window.location.href = "/search.html?q=" + encodeURIComponent(qInput ? qInput.value.trim() : "") + "&loc=" + encodeURIComponent(locSelect ? locSelect.value : ""); });
     }
   }
 

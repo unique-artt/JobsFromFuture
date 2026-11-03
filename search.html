@@ -82,6 +82,7 @@ description: "Search remote, contract, and task-based roles by title, skill, key
     border: 1px solid #fed7aa;
     border-radius: 14px;
     margin-bottom: 32px;
+    display: none;
   }
   .search-empty h2 {
     font-size: 19px;
@@ -98,6 +99,7 @@ description: "Search remote, contract, and task-based roles by title, skill, key
     font-weight: 900;
     letter-spacing: -0.4px;
     margin-bottom: 20px;
+    display: none;
   }
   .job-grid {
     display: grid;
@@ -121,6 +123,20 @@ description: "Search remote, contract, and task-based roles by title, skill, key
     box-shadow: 0 6px 20px rgba(249, 115, 22, 0.12);
     transform: translateY(-2px);
   }
+  .job-card .card-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    align-self: flex-start;
+  }
+  .badge-remote { background: var(--purple-light); color: var(--purple); }
+  .badge-task { background: #fef3c7; color: #b45309; }
+  .badge-onsite { background: #f3f4f6; color: var(--muted); }
   .job-card h3 {
     font-size: 16px;
     line-height: 1.35;
@@ -138,6 +154,30 @@ description: "Search remote, contract, and task-based roles by title, skill, key
     font-weight: 800;
     color: var(--orange);
   }
+  
+  .pager {
+    margin: 40px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .pager-btn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .pager-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
+  .pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
   .back-home {
     display: inline-block;
     margin-top: 40px;
@@ -165,12 +205,29 @@ description: "Search remote, contract, and task-based roles by title, skill, key
 
 <div class="search-results" id="search-results">
   <p class="search-status" id="search-status"></p>
-  <div class="search-empty" id="search-empty" style="display:none;">
+  
+  <div class="search-empty" id="search-empty">
     <h2>No exact match found</h2>
     <p>We couldn't find a job with that term. Try a related search below.</p>
   </div>
-  <h2 class="related-title" id="related-title" style="display:none;">Related jobs</h2>
+  
+  <h2 class="related-title" id="related-title">Related jobs</h2>
+  
   <div class="job-grid" id="results-grid"></div>
+  
+  <!-- Pagination -->
+  <div class="pager" id="search-pager" style="display:none;">
+    <button class="pager-btn" id="prev-page">‹ Prev</button>
+    <span id="page-indicator">Page 1 of 1</span>
+    <button class="pager-btn" id="next-page">Next ›</button>
+  </div>
+  
+  <!-- More jobs section -->
+  <div id="more-section" style="display:none;">
+    <h2 class="related-title" style="display:block; margin-top:48px; margin-bottom:20px;">More opportunities you might like</h2>
+    <div class="job-grid" id="more-grid"></div>
+  </div>
+
   <a href="/" class="back-home">← Back to all jobs</a>
 </div>
 
